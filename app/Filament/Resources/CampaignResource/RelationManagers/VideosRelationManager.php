@@ -28,11 +28,15 @@ class VideosRelationManager extends RelationManager
                     TextInput::make('name')->required(),
                     FileUpload::make('download_url')
                                     ->disk('public')
-                                    ->directory('videos'),
-                    // Select::make('client_id')->relationship('client', 'name')->required(),
+                                    ->directory('videos')
+                                    ->label('Video File') 
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        $fileSize = $state->getSize() / (1024 * 1024); // Size in KB
+                                        $set('size', number_format($fileSize, 2));
+                                    }),
                     TextInput::make('length'),
                     TextInput::make('frames'),
-                    TextInput::make('size'),
+                    TextInput::make('size')->disabled(),
                     TextInput::make('language'),
                     TextInput::make('deadline'),
                     TextInput::make('beta_no'),
