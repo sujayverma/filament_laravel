@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CampaignResource\Pages;
 use App\Filament\Resources\CampaignResource\RelationManagers;
 use App\Models\Campaign;
+use App\Models\Channel;
 use Filament\Forms;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -56,11 +58,26 @@ class CampaignResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('Mail')
+                ->icon('heroicon-m-envelope')
+                ->iconButton()
+                ->label('Mail')
+                ->form([
+                    Select::make('authorId')
+                        ->label('Author')
+                        ->options(Channel::query()->pluck('name', 'id'))
+                        ->required(),
+                ])
+                ->action(function (array $data, Channel $record): void {
+                    // $record->author()->associate($data['authorId']);
+                    // $record->save();
+                }),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -38,8 +38,8 @@ class VideosRelationManager extends RelationManager
                     TextInput::make('frames'),
                     TextInput::make('size')->disabled(),
                     TextInput::make('language'),
-                    TextInput::make('deadline'),
-                    TextInput::make('beta_no'),
+                    TextInput::make('deadline')->label('Caption'),
+                    TextInput::make('beta_no')->label('Tvc ID')->default('Perf/56/2024'),
                     Checkbox::make('status')->required()
                    
                 ])->columns(1)
