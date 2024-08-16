@@ -15,6 +15,10 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
+use App\Models\Video;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Group;
 
 class VideosRelationManager extends RelationManager
 {
@@ -22,10 +26,13 @@ class VideosRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
+        $video_id =  Video::get()?->pluck('id')->last();
+        $video_id = ($video_id != null) ? $video_id+1 : 1;
+        $beta_no = 'Perf/'.$video_id.'/'.date('Y');
+        // dd($beta_no);
         return $form
             ->schema([
-                Section::make('Add a Video')->schema([
-                    TextInput::make('name')->required(),
+                Section::make('Upload a Video')->schema([
                     FileUpload::make('download_url')
                                     ->disk('public')
                                     ->directory('videos')
@@ -33,16 +40,25 @@ class VideosRelationManager extends RelationManager
                                     ->afterStateUpdated(function ($state, callable $set) {
                                         $fileSize = $state->getSize() / (1024 * 1024); // Size in KB
                                         $set('size', number_format($fileSize, 2));
-                                    }),
-                    TextInput::make('length'),
-                    TextInput::make('frames'),
-                    TextInput::make('size')->disabled(),
-                    TextInput::make('language'),
-                    TextInput::make('deadline')->label('Caption'),
-                    TextInput::make('beta_no')->label('Tvc ID')->default('Perf/56/2024'),
-                    Checkbox::make('status')->required()
+                                    })->columnSpanFull(),
+                    Group::make()->schema([
+                        Group::make()->schema([
+                            TextInput::make('name')->required(),
+                            TextInput::make('language'),
+                            DatePicker::make('deadline'),
+                            TextInput::make('caption'),
+                        ])->columns(2),
+                        
+                    ])->columnSpanFull(),        
+                    
+                    Fieldset::make('Properties')->schema([
+                        TextInput::make('length'),
+                        TextInput::make('frames'),
+                        TextInput::make('size')->disabled(),
+                        TextInput::make('beta_no')->label('Tvc ID')->default($beta_no),
+                    ])->columns(4),
                    
-                ])->columns(1)
+                ])->columns(4)
             ]);
     }
 

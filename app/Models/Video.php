@@ -16,7 +16,7 @@ class Video extends Model
         'frames',
         'size',
         'language',
-        // 'deadline',
+        'deadline',
         'beta_no',
         'caption',
         'download_url',
