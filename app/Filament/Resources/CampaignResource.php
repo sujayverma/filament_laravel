@@ -19,6 +19,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Wizard\Step;
+use App\Filament\Resources\Str;
+use App\View\Components\ChannelTable;
+use Filament\Forms\Components\View;
 
 class CampaignResource extends Resource
 {
@@ -62,11 +66,24 @@ class CampaignResource extends Resource
                 ->icon('heroicon-m-envelope')
                 ->iconButton()
                 ->label('Mail')
-                ->form([
-                    Select::make('authorId')
-                        ->label('Author')
-                        ->options(Channel::query()->pluck('name', 'id'))
-                        ->required(),
+                ->steps([
+                    Step::make('Name')
+                        ->description('Give the category a unique name')
+                        ->schema([
+                            View::make('components.channel-table')
+                            ->viewData(['channels'=>Channel::all()]),
+                        ]),
+                    Step::make('Description')
+                        ->description('Add some extra details')
+                        ->schema([
+                            RichEditor::make('description')->disableAllToolbarButtons(),
+                        ]),
+                    Step::make('Visibility')
+                        ->description('Control who can view it')
+                        ->schema([
+                            TextInput::make('agency')->required(),
+                            TextInput::make('brand')->required(),
+                        ]),
                 ])
                 ->action(function (array $data, Channel $record): void {
                     // $record->author()->associate($data['authorId']);
