@@ -67,11 +67,14 @@ class CampaignResource extends Resource
                 ->iconButton()
                 ->label('Mail')
                 ->steps([
-                    Step::make('Name')
-                        ->description('Give the category a unique name')
+                    Step::make('Step 1')
+                        ->description('Select Channel')
                         ->schema([
-                            View::make('components.channel-table')
-                            ->viewData(['channels'=>Channel::all()]),
+                            // View::make('components.channel-table')
+                            // ->viewData(['channels'=>Channel::all()]),
+                            View::make('livewire.channel-table')
+                            ->viewData(['channels'=>Channel::all()])
+                            ->statePath('ChannelTable'),
                         ]),
                     Step::make('Description')
                         ->description('Add some extra details')
