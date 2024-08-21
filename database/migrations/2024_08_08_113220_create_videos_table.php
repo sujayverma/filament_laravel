@@ -25,8 +25,8 @@ return new class extends Migration
             $table->string('caption', 64)->charset('utf8mb4')->nullable();
             $table->string('download_url', 128)->charset('utf8mb4')->nullable();
             $table->string('download_channels', 128)->charset('utf8mb4')->nullable();
-            $table->tinyInteger('status', false, true);
-            $table->integer('downloadable')->unsigned();
+            $table->tinyInteger('status', false, true)->default(true);
+            $table->integer('downloadable')->unsigned()->default(1);
             $table->timestamps();
         });
     }

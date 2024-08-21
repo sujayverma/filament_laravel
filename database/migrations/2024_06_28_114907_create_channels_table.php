@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id()->unsigned();
             $table->string('name', 255)->charset('utf8mb4');
             $table->string('contact_person', 255)->charset('utf8mb4');
-            $table->string('email', 255)->charset('utf8mb4');
+            $table->text('email')->charset('utf8mb4');
             $table->string('phone_no', 50)->charset('utf8mb4');
             $table->text('address')->charset('utf8mb4');
             $table->tinyInteger('status',false,true); // Auto increment false and Unsigned is true.
