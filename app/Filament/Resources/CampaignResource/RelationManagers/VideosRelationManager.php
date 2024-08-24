@@ -54,7 +54,7 @@ class VideosRelationManager extends RelationManager
                     Fieldset::make('Properties')->schema([
                         TextInput::make('length'),
                         TextInput::make('frames'),
-                        TextInput::make('size')->disabled(),
+                        TextInput::make('size')->readOnly(),
                         TextInput::make('beta_no')->label('Tvc ID')->default($beta_no),
                     ])->columns(4),
                    

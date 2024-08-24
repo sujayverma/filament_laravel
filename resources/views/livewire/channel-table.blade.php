@@ -23,7 +23,7 @@
         @foreach($channels as $channel)
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <input type="checkbox" wire:model="selectedRows" name="select-row" value="{{ $channel->id }}">
+                    <input type="checkbox" wire:model="selectedRows" name="select-row[]" value="{{ $channel->id }}">
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     {{ $channel->name }}

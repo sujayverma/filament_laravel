@@ -24,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191);
-        Blade::component('channel-table', ChannelTable::class);
+        // Blade::component('channel-table', ChannelTable::class);
     }
 }
