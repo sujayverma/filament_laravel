@@ -46,7 +46,7 @@
 
     <div class="mt-4">
         @if(strlen($selected) > 0)
-            <div>Hello World </div>
+            
         @endif
         @if(count($selectedRows) > 0)
         {{ dd($selectedRows) }}
