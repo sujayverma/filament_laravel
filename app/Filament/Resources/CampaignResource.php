@@ -7,22 +7,29 @@ use App\Filament\Resources\CampaignResource\RelationManagers;
 use App\Models\Campaign;
 use App\Models\Channel;
 use Filament\Forms;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Wizard\Step;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Button;
+use Filament\Resources\Resource;
+
+use Filament\Tables;
+use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\CheckboxColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use App\Filament\Resources\Str;
 use App\View\Components\ChannelTable;
-use Filament\Forms\Components\View;
+use Filament\Forms\Components\Repeater;
 
 class CampaignResource extends Resource
 {
@@ -66,29 +73,9 @@ class CampaignResource extends Resource
                 ->icon('heroicon-m-envelope')
                 ->iconButton()
                 ->label('Mail')
-                ->steps([
-                    Step::make('Step 1')
-                        ->description('Select Channel')
-                        ->schema([
-                            // View::make('components.channel-table')
-                            // ->viewData(['channels'=>Channel::all()]),
-                            View::make('livewire.channel-table')
-                            ->viewData(['channels'=>Channel::all()])
-                            ->statePath('ChannelTable'),
-                        ]),
-                    Step::make('Description')
-                        ->description('Add some extra details')
-                        ->schema([
-                            RichEditor::make('description')->disableAllToolbarButtons(),
-                        ]),
-                    Step::make('Visibility')
-                        ->description('Control who can view it')
-                        ->schema([
-                            TextInput::make('agency')->required(),
-                            TextInput::make('brand')->required(),
-                        ]),
-                ])
-                ->action(function (array $data, Channel $record): void {
+                ->form(fn ($record) => static::getWizardForm($record))
+                ->action(function (array $data): void {
+                    dd($data);
                     // $record->author()->associate($data['authorId']);
                     // $record->save();
                 }),
@@ -118,4 +105,42 @@ class CampaignResource extends Resource
             'edit' => Pages\EditCampaign::route('/{record}/edit'),
         ];
     }
+
+
+    protected static function getWizardForm($record): array
+    {
+        return [
+            Wizard::make()
+                ->steps([
+                    Step::make('Select Channels')
+                        ->schema([
+                            TextInput::make('search')
+                                ->label('Search Channels')
+                                ->placeholder('Search channels...')
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, $get, $set) {
+                                    // You may pass search state to the livewire component if needed
+                                    $set('search', $state); // Set the search state // Set the search state
+                                }),
+                            
+                            Forms\Components\View::make('livewire-channel-table')
+                            // ->data(['search' => fn($get) => $get('search')]), // Bind the search state,
+                        ]),
+                    Step::make('Another Step')
+                        ->schema([
+                            // Fields for the second step
+                        ]),
+                    Step::make('Final Step')
+                        ->schema([
+                            // Fields for the third step
+                        ]),
+                    ]),
+                // ->action(function (array $data, Channel $record): void {
+                //     // $record->author()->associate($data['authorId']);
+                //     // $record->save();
+                //     dd($data);
+                // }),
+        ];
+    }
+
 }
