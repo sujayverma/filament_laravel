@@ -31,6 +31,7 @@ class ChannelTableCustom extends Component
     public function addRows($value, $extraData = null)
     {
         $this->selected = $value;
+        
     }
 
     public function search()
@@ -46,6 +47,18 @@ class ChannelTableCustom extends Component
        
     }
 
+    public function checkSelected()
+    {
+        if($this->selected ==='')
+        {
+            return false;
+        }
+    }
+
+    public function updatedSelected()
+    {
+        $this->emit('selectedChannels', $this->selected); // Emit event on update
+    }
    
     
 

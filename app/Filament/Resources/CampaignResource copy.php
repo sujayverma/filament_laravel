@@ -19,8 +19,6 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Button;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Textarea;
 
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -113,49 +111,97 @@ class CampaignResource extends Resource
     protected static function getWizardForm($record): array
     {
         return [
-            Wizard::make()
-                ->steps([
-                    Step::make('Select Channels')
+            Wizard::make([
+
+                Step::make('Select Channels')
+                ->schema([
+                    TextInput::make('search')
+                        ->label('Search Channels')
+                        ->placeholder('Search channels...')
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, $get, $set) {
+                            // You may pass search state to the livewire component if needed
+                            $set('search', $state); // Set the search state // Set the search state
+                        }),
+                    
+                    Forms\Components\View::make('livewire-channel-table')
+                    ->afterStateUpdated(function ($state, $get, $set) {
+                        // To listen for the event, make sure the component is listening
+                        $set('selectedChannels', $state['selectedChannels'] ?? []);
+                    })
+                    
+                    ->extraAttributes(['wire:ignore' => true]), // This ensures Livewire events work correctly
+                    // ->data(['search' => fn($get) => $get('search')]), // Bind the search state,
+                ]),
+                
+            Step::make('Another Step')
+                ->schema([
+                    // Fields for the second step
+                    Forms\Components\Repeater::make('selected_channels')
+                        ->label('Selected Channels')
                         ->schema([
-                            TextInput::make('search')
-                                ->label('Search Channels')
-                                ->placeholder('Search channels...')
-                                ->reactive()
-                                ->afterStateUpdated(function ($state, $get, $set) {
-                                    // You may pass search state to the livewire component if needed
-                                    $set('search', $state); // Set the search state // Set the search state
-                                }),
-                            
-                            Forms\Components\View::make('livewire-channel-table')
-                            ->afterStateUpdated(function ($state, $get, $set) {
-                                dd($state);
-                                // To listen for the event, make sure the component is listening
-                                $set('selectedChannels', $state['selectedChannels'] ?? []);
-                            })
-                            
-                            ->extraAttributes(['wire:ignore' => true]), // This ensures Livewire events work correctly
-                            // ->data(['search' => fn($get) => $get('search')]), // Bind the search state,
-                        ]),
-                        
-                    Step::make('Another Step')
-                        ->schema([
-                            Hidden::make('selectedChannels'),
-                            Textarea::make('selectedChannelsDisplay')
-                                ->label('Selected Channels')
-                                ->default(fn ($get) => implode(', ', $get('selectedChannels')))
-                                ->disabled(),
+                            Forms\Components\TextInput::make('name'),
                         ])
-                        ->registerListeners([
-                            'channelsSelected' => function ($state, $channels) {
-                                $state->set('selectedChannels', $channels);
-                                $state->set('selectedChannelsDisplay', implode(', ', $channels));
-                            },
-                        ]),
-                    Step::make('Final Step')
-                        ->schema([
-                            // Fields for the third step
-                        ]),
-                    ])
+                        ->default(function ($get) {
+                            // dd($get('selected_channels'));
+                            // selected_channels
+                            return $get('selectedChannels');
+                        })
+                        ->reactive(),
+                ]),
+            Step::make('Final Step')
+                ->schema([
+                    // Fields for the third step
+                ]),
+            ])
+            ->nextAction(
+                fn (Forms\Components\Actions\Action $action) => $action->label('Next step')
+                ->extraAttributes([
+                    'x-on:click' => 'handleNextStep()', // Alpine.js click handler
+                ])
+            )
+                // ->steps([
+                //     Step::make('Select Channels')
+                //         ->schema([
+                //             TextInput::make('search')
+                //                 ->label('Search Channels')
+                //                 ->placeholder('Search channels...')
+                //                 ->reactive()
+                //                 ->afterStateUpdated(function ($state, $get, $set) {
+                //                     // You may pass search state to the livewire component if needed
+                //                     $set('search', $state); // Set the search state // Set the search state
+                //                 }),
+                            
+                //             Forms\Components\View::make('livewire-channel-table')
+                //             ->afterStateUpdated(function ($state, $get, $set) {
+                //                 // To listen for the event, make sure the component is listening
+                //                 $set('selectedChannels', $state['selectedChannels'] ?? []);
+                //             })
+                            
+                //             ->extraAttributes(['wire:ignore' => true]), // This ensures Livewire events work correctly
+                //             // ->data(['search' => fn($get) => $get('search')]), // Bind the search state,
+                //         ]),
+                        
+                //     Step::make('Another Step')
+                //         ->schema([
+                //             // Fields for the second step
+                //             Forms\Components\Repeater::make('selected_channels')
+                //                 ->label('Selected Channels')
+                //                 ->schema([
+                //                     Forms\Components\TextInput::make('name'),
+                //                 ])
+                //                 ->default(function ($get) {
+                //                     // dd($get('selected_channels'));
+                //                     // selected_channels
+                //                     return $get('selectedChannels');
+                //                 })
+                //                 ->reactive(),
+                //         ]),
+                //     Step::make('Final Step')
+                //         ->schema([
+                //             // Fields for the third step
+                //         ]),
+                //     ])
                    
                     // ->nextAction(
                     //     fn (Action $action) => $action->label('Next step'),
