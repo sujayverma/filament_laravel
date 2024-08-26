@@ -15,9 +15,12 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Button;
 use Filament\Resources\Resource;
+use Livewire\Livewire;
 
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -36,6 +39,8 @@ class CampaignResource extends Resource
     protected static ?string $model = Campaign::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    
 
     public static function form(Form $form): Form
     {
@@ -109,6 +114,7 @@ class CampaignResource extends Resource
 
     protected static function getWizardForm($record): array
     {
+        $currentStep = 1;
         return [
             Wizard::make()
                 ->steps([
@@ -125,16 +131,34 @@ class CampaignResource extends Resource
                             
                             Forms\Components\View::make('livewire-channel-table')
                             // ->data(['search' => fn($get) => $get('search')]), // Bind the search state,
-                        ]),
+                            ]),
+                            
                     Step::make('Another Step')
                         ->schema([
-                            // Fields for the second step
+                            Forms\Components\View::make('livewire-video-table')
                         ]),
+                     
+                        
                     Step::make('Final Step')
                         ->schema([
                             // Fields for the third step
                         ]),
-                    ]),
+                    ])
+                    // ->nextAction(
+                    //     fn (Forms\Components\Actions\Action $action) => $action
+                    //     ->label('Next step')
+                    //      ->extraAttributes([
+                    //             'wire:click' => 'nextStepClicked', // Pass data as argument
+                    //         ])
+                    //     ->action(function () {
+                            
+                    //         // Emitting the event to a specific Livewire component
+                    //         // Livewire::find('livewire.channel-table-custom')->emit('nextStepClicked');
+            
+                    //         // Additional logic for handling the next step...
+                    //     }),
+                    // ),
+                    
                 // ->action(function (array $data, Channel $record): void {
                 //     // $record->author()->associate($data['authorId']);
                 //     // $record->save();
@@ -143,4 +167,7 @@ class CampaignResource extends Resource
         ];
     }
 
+    
+
+   
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 
 class ChannelTableCustom extends Component
 {
+    // protected $listeners = ['nextStepClicked'];
     public $search = '';
     public $selected = '';
 
@@ -31,6 +32,7 @@ class ChannelTableCustom extends Component
     public function addRows($value, $extraData = null)
     {
         $this->selected = $value;
+        $this->dispatch('channelsSelected', $this->selected);
     }
 
     public function search()
@@ -46,7 +48,31 @@ class ChannelTableCustom extends Component
        
     }
 
+    public function getListeners()
+    {
+        return [
+            'nextStepClicked' => 'handleNextStepClicked',
+        ];
+    }
+
+    public function handleNextStepClicked()
+    {
+        // Custom logic when the next button is clicked
+        dd($this->selected);
+        // Perform other operations as needed
+    }
+
+    // public function nextStepClicked()
+    // {
+    //     // Custom logic when the next button is clicked
+    //     echo 'hi'; exit;
+    //     // Perform other operations as needed
+    // }
    
+    public function emitSelected()
+    {
+        $this->emit('channelsSelected', $this->selected);
+    }
     
 
     public function render()
