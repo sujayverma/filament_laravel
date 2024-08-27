@@ -1,6 +1,4 @@
 <div class="overflow-y-auto">
-    <input type="text" wire:model.debounce.500ms="search" placeholder="Search Channels..." class="mb-4 p-2 border rounded">
-
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>
@@ -25,7 +23,7 @@
             @foreach($channels as $channel)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <input type="checkbox" wire:click="addRows($event.target.value)" name="selectedRows" value="{{ $channel->id }}">
+                        <input type="checkbox"   wire:model="checkedItems.{{ $channel->id }}" wire:change="handleCheckboxChange($event.target.value)"  name="selectedRows[]" value="{{ $channel->id }}">
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         {{ $channel->name }}

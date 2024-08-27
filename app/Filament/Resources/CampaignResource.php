@@ -67,7 +67,6 @@ class CampaignResource extends Resource
                 Tables\Columns\TextColumn::make('client.name')->sortable(),
                 Tables\Columns\TextColumn::make('agency'),
                 Tables\Columns\TextColumn::make('brand'),
-                Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('created_at')->label('Created On')->date()->toggleable()
             ])
             ->filters([
@@ -120,22 +119,19 @@ class CampaignResource extends Resource
                 ->steps([
                     Step::make('Select Channels')
                         ->schema([
-                            TextInput::make('search')
-                                ->label('Search Channels')
-                                ->placeholder('Search channels...')
-                                ->reactive()
-                                ->afterStateUpdated(function ($state, $get, $set) {
-                                    // You may pass search state to the livewire component if needed
-                                    $set('search', $state); // Set the search state // Set the search state
-                                }),
+                           
                             
                             Forms\Components\View::make('livewire-channel-table')
                             // ->data(['search' => fn($get) => $get('search')]), // Bind the search state,
                             ]),
                             
-                    Step::make('Another Step')
+                    Step::make('Select Videos')
                         ->schema([
+                            Hidden::make('campaign_id')
+                            ->default($record->id), // Store the current campaign ID in a hidden field
                             Forms\Components\View::make('livewire-video-table')
+                            ->viewData(['campaignId' => $record->id])
+                            // ->data(['campaignId' => $record->id]), 
                         ]),
                      
                         

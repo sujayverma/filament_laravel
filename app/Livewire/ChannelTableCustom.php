@@ -16,6 +16,8 @@ class ChannelTableCustom extends Component
 
     public $searchTerm = '';
 
+    public $checkedItems = [];
+
     protected $rules = [
         'selectedRows' => 'required|array|min:1', // Example validation rule
     ];
@@ -29,6 +31,18 @@ class ChannelTableCustom extends Component
         
     }
 
+    public function handleCheckboxChange($value)
+    {
+        if (isset($this->checkedItems[$value]) && $this->checkedItems[$value]) {
+            $this->addRows($value);
+        } else {
+            $this->addRows('');
+        }
+        
+    }
+
+
+
     public function addRows($value, $extraData = null)
     {
         $this->selected = $value;
@@ -39,7 +53,7 @@ class ChannelTableCustom extends Component
     {
         // Access the current value of the input using the bound property
         $searchValue = $this->searchTerm;
-        dd($searchValue);
+        
     }
 
     public function validateData()
@@ -55,26 +69,7 @@ class ChannelTableCustom extends Component
         ];
     }
 
-    public function handleNextStepClicked()
-    {
-        // Custom logic when the next button is clicked
-        dd($this->selected);
-        // Perform other operations as needed
-    }
-
-    // public function nextStepClicked()
-    // {
-    //     // Custom logic when the next button is clicked
-    //     echo 'hi'; exit;
-    //     // Perform other operations as needed
-    // }
    
-    public function emitSelected()
-    {
-        $this->emit('channelsSelected', $this->selected);
-    }
-    
-
     public function render()
     {
         $channels = Channel::query()
