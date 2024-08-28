@@ -39,55 +39,45 @@ class VideoTable extends Component
 
     public function handleVideoCheckboxChange($value)
     {
-       
         if (isset($this->checkedVideoItems[$value])) 
         {
             $i = 0;
             foreach($this->checkedVideoItems as $key=>$value)
             {
                 if($value)
-                {
                     $this->selectedRows[$i] = $key;  
-                }
-
                 $i++;
             }
-
             $this->addVideo($this->channelID, $this->selectedRows);
             
         } 
-        
     }
 
-    public function addVideo($channelID, $videoIDs)
+    public function addVideo(int $channelID, array $videoIDs)
     {
         $this->dispatch('moveToStep3', $channelID, $videoIDs);
-
     }
-
-
 
     #[On('channelsSelected')]
     public  function handleNewPost($selected)
     {
-        //
         $this->channelID = $selected;
-        
     }
 
     #[On('moveToStep3')]
-    public static function handleNewVideos( $channelID, $videoIDs)
+    public function handleNewVideos(int $channelID, array $videoIDs): void
     {
-        //
-        session()->forget('channel_id');
-        session()->forget('selected_videos');
+        $this->resetSession();
         session()->put('channel_id', $channelID);
         session()->put('selected_videos', $videoIDs);
-        dd( session('selected_videos'));
-        // self::$storedInstance->channelID = $channelID;
-        // self::$storedInstance->videoIDs = $videoIDs;
-        
+       
     }
+
+    public function resetSession()
+    {
+        session()->forget(['channel_id', 'selected_videos']);
+    }
+
     public function render()
     {
         // dd($this->campaignID);
