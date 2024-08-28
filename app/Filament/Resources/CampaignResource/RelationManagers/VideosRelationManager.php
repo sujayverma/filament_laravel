@@ -68,6 +68,11 @@ class VideosRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('download_url')->label('Filename'),
+                Tables\Columns\TextColumn::make('caption'),
+                Tables\Columns\TextColumn::make('Language'),
+                Tables\Columns\TextColumn::make('size'),
+                Tables\Columns\TextColumn::make('beta_no')->label('Tvc ID'),
             ])
             ->filters([
                 //

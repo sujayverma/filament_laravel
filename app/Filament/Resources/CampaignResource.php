@@ -21,6 +21,8 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Button;
 use Filament\Resources\Resource;
 use Livewire\Livewire;
+use Livewire\Attributes\On;
+use App\Http\Controllers\DataBladeComponent;
 
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -36,11 +38,18 @@ use Filament\Forms\Components\Repeater;
 
 class CampaignResource extends Resource
 {
+    private static $storedInstance;
     protected static ?string $model = Campaign::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    
+    public int $channelID;
+    public int|array $videoIDs;
+    public function __construct()
+    {
+        self::$storedInstance = $this; // Store the instance
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -63,8 +72,8 @@ class CampaignResource extends Resource
         return $table
             ->columns([
                 //
-                Tables\Columns\TextColumn::make('name')->sortable(),
-                Tables\Columns\TextColumn::make('client.name')->sortable(),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('client.name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('agency'),
                 Tables\Columns\TextColumn::make('brand'),
                 Tables\Columns\TextColumn::make('created_at')->label('Created On')->date()->toggleable()
@@ -76,12 +85,9 @@ class CampaignResource extends Resource
                 Action::make('Mail')
                 ->icon('heroicon-m-envelope')
                 ->iconButton()
-                ->label('Mail')
-                ->form(fn ($record) => static::getWizardForm($record))
+                ->label('Send Email to Channels')
+                ->steps(fn ($record) => static::getWizardForm($record))
                 ->action(function (array $data): void {
-                    dd($data);
-                    // $record->author()->associate($data['authorId']);
-                    // $record->save();
                 }),
                 Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\DeleteAction::make()->label(''),
@@ -114,32 +120,31 @@ class CampaignResource extends Resource
     protected static function getWizardForm($record): array
     {
         $currentStep = 1;
+        $instance = new self();
+        $channel = isset($instance->channelID) ? $instance->channelID : ''; 
+        $video = isset($instance->videoIDs) ? $instance->videoIDs : '';
         return [
-            Wizard::make()
-                ->steps([
                     Step::make('Select Channels')
                         ->schema([
-                           
-                            
                             Forms\Components\View::make('livewire-channel-table')
-                            // ->data(['search' => fn($get) => $get('search')]), // Bind the search state,
                             ]),
                             
                     Step::make('Select Videos')
                         ->schema([
-                            Hidden::make('campaign_id')
-                            ->default($record->id), // Store the current campaign ID in a hidden field
                             Forms\Components\View::make('livewire-video-table')
                             ->viewData(['campaignId' => $record->id])
-                            // ->data(['campaignId' => $record->id]), 
                         ]),
                      
                         
-                    Step::make('Final Step')
+                    Step::make('Email Contents')
                         ->schema([
+                            Textarea::make('Email Template')
+                            ->default($channel),
+                            Textarea::make('selected_videos')
+                            ->default(fn () => isset($_SESSION['selected_videos']) ?? $_SESSION['selected_videos'])
                             // Fields for the third step
                         ]),
-                    ])
+                   
                     // ->nextAction(
                     //     fn (Forms\Components\Actions\Action $action) => $action
                     //     ->label('Next step')

@@ -42,7 +42,7 @@ class ChannelResource extends Resource
                 //
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('contact_person'),
-                Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make('email')->wrap(),
                 Tables\Columns\TextColumn::make('phone_no'),
                 Tables\Columns\TextColumn::make('address'),
 

@@ -18,9 +18,6 @@ class ChannelTableCustom extends Component
 
     public $checkedItems = [];
 
-    protected $rules = [
-        'selectedRows' => 'required|array|min:1', // Example validation rule
-    ];
     public function toggleSelectAll()
     {
         if(count($this->selectedRows) === Channel::count()) {
@@ -33,7 +30,8 @@ class ChannelTableCustom extends Component
 
     public function handleCheckboxChange($value)
     {
-        if (isset($this->checkedItems[$value]) && $this->checkedItems[$value]) {
+        if (isset($this->checkedItems[$value]) && $this->checkedItems[$value]) 
+        {
             $this->addRows($value);
         } else {
             $this->addRows('');
@@ -74,6 +72,7 @@ class ChannelTableCustom extends Component
     {
         $channels = Channel::query()
             ->where('name', 'like', "%{$this->search}%")
+            ->orderBy('id', 'desc')
             ->get();
         return view('livewire.channel-table-custom', compact('channels'));
     }
