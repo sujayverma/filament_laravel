@@ -24,6 +24,7 @@ use Filament\Resources\Resource;
 use Livewire\Livewire;
 use Livewire\Attributes\On;
 use App\Http\Controllers\DataBladeComponent;
+use Filament\Notifications\Notification;
 
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -86,7 +87,15 @@ class CampaignResource extends Resource
                 ->label('Send Email to Channels')
                 ->steps(fn ($record) => static::getWizardForm($record))
                 ->action(function (array $data, $record): void {
-                   dd($record);
+                    if (session()->get('selected_videos')==null) {
+                        Notification::make()
+                            ->title('Error')
+                            ->body('Please select a video')
+                            ->danger()
+                            ->send();
+                        
+                        return; // Stop further processing if there is an error
+                    }
                 }),
                 Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\DeleteAction::make()->label(''),
