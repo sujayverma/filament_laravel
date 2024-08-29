@@ -48,7 +48,12 @@ class VideoTable extends Component
                     $this->selectedRows[$i] = $key;  
                 $i++;
             }
-            $this->addVideo($this->channelID, $this->selectedRows);
+            $this->resetSession();
+            session()->put('channel_id', $this->channelID);
+            session()->put('selected_videos', $this->selectedRows);
+            dd(session()->get('selected_videos'));
+
+            // $this->addVideo($this->channelID, $this->selectedRows);
             
         } 
     }
