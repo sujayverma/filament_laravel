@@ -6,6 +6,7 @@ use App\Filament\Resources\CampaignResource\Pages;
 use App\Filament\Resources\CampaignResource\RelationManagers;
 use App\Models\Campaign;
 use App\Models\Channel;
+use App\Models\setting;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
@@ -45,12 +46,8 @@ class CampaignResource extends Resource
 
     public int $channelID;
     public int|array $videoIDs;
-    public function __construct()
-    {
-        self::$storedInstance = $this; // Store the instance
-    }
 
-
+    
     public static function form(Form $form): Form
     {
         return $form
@@ -68,7 +65,8 @@ class CampaignResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
+    { 
+       
         return $table
             ->columns([
                 //
@@ -87,7 +85,8 @@ class CampaignResource extends Resource
                 ->iconButton()
                 ->label('Send Email to Channels')
                 ->steps(fn ($record) => static::getWizardForm($record))
-                ->action(function (array $data): void {
+                ->action(function (array $data, $record): void {
+                   dd($record);
                 }),
                 Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\DeleteAction::make()->label(''),
@@ -119,10 +118,7 @@ class CampaignResource extends Resource
 
     protected static function getWizardForm($record): array
     {
-        $currentStep = 1;
-        $instance = new self();
-        $channel = isset($instance->channelID) ? $instance->channelID : ''; 
-        $video = isset($instance->videoIDs) ? $instance->videoIDs : '';
+       
         return [
                     Step::make('Select Channels')
                         ->schema([
@@ -138,33 +134,12 @@ class CampaignResource extends Resource
                         
                     Step::make('Email Contents')
                         ->schema([
-                            Textarea::make('Email Template')
-                            ->default($channel),
-                            Textarea::make('selected_videos')
-                            ->default(fn () => isset($_SESSION['selected_videos']) ?? $_SESSION['selected_videos'])
+                            RichEditor::make('Email')->disableAllToolbarButtons()
+                            ->default(setting::where('setting_key', 'email_message')->pluck('setting_value')->first()),
+                           
                             // Fields for the third step
                         ]),
                    
-                    // ->nextAction(
-                    //     fn (Forms\Components\Actions\Action $action) => $action
-                    //     ->label('Next step')
-                    //      ->extraAttributes([
-                    //             'wire:click' => 'nextStepClicked', // Pass data as argument
-                    //         ])
-                    //     ->action(function () {
-                            
-                    //         // Emitting the event to a specific Livewire component
-                    //         // Livewire::find('livewire.channel-table-custom')->emit('nextStepClicked');
-            
-                    //         // Additional logic for handling the next step...
-                    //     }),
-                    // ),
-                    
-                // ->action(function (array $data, Channel $record): void {
-                //     // $record->author()->associate($data['authorId']);
-                //     // $record->save();
-                //     dd($data);
-                // }),
         ];
     }
 

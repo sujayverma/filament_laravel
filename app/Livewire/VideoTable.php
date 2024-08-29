@@ -51,16 +51,8 @@ class VideoTable extends Component
             $this->resetSession();
             session()->put('channel_id', $this->channelID);
             session()->put('selected_videos', $this->selectedRows);
-            dd(session()->get('selected_videos'));
-
-            // $this->addVideo($this->channelID, $this->selectedRows);
             
         } 
-    }
-
-    public function addVideo(int $channelID, array $videoIDs)
-    {
-        $this->dispatch('moveToStep3', $channelID, $videoIDs);
     }
 
     #[On('channelsSelected')]
@@ -69,15 +61,7 @@ class VideoTable extends Component
         $this->channelID = $selected;
     }
 
-    #[On('moveToStep3')]
-    public function handleNewVideos(int $channelID, array $videoIDs): void
-    {
-        $this->resetSession();
-        session()->put('channel_id', $channelID);
-        session()->put('selected_videos', $videoIDs);
-       
-    }
-
+    
     public function resetSession()
     {
         session()->forget(['channel_id', 'selected_videos']);
