@@ -7,6 +7,8 @@ use App\Filament\Resources\CampaignResource\RelationManagers;
 use App\Models\Campaign;
 use App\Models\Channel;
 use App\Models\setting;
+use App\Models\Video;
+use App\Mail\CampaignVideoSelectionMail;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
@@ -96,6 +98,24 @@ class CampaignResource extends Resource
                         
                         return; // Stop further processing if there is an error
                     }
+                    if (session()->get('channel_id')==null) {
+                        Notification::make()
+                            ->title('Error')
+                            ->body('Please select a Channel')
+                            ->danger()
+                            ->send();
+                        
+                        return; // Stop further processing if there is an error
+                    }
+                    $channels = Channel::where('id', session()->get('channel_id'))->select('name', 'email')->get()->toArray();
+                    $channelName = $channels[0]['name'];
+                    $channelToEmail = $channels[0]['email'];
+                    $clientName = $record->client->name;
+                    $clientToEmail = $record->client->email;
+                    $campaign = $record;
+                    $videos = Video::whereIn('id', session()->get('selected_videos'))->get()->toArray();
+                    // Mail::to($campaign->client->email)->send(new CampaignVideoSelectionMail($campaign, $videos));
+                    $mail = new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos);
                 }),
                 Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\DeleteAction::make()->label(''),

@@ -39,7 +39,9 @@ class CampaignsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                ->sortable()
+                ->url(fn ($record) => route('filament.admin.resources.campaigns.index', ['record' => $record->id])),
                 Tables\Columns\TextColumn::make('agency'),
                 Tables\Columns\TextColumn::make('brand'),
                 Tables\Columns\TextColumn::make('status'),

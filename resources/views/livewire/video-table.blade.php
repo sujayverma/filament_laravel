@@ -1,4 +1,6 @@
 <div class="overflow-y-auto">
+   
+    @if(!empty($videos))
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>
@@ -41,10 +43,13 @@
             @endforeach
         </tbody>
     </table>
+    @else
 
     <div class="mt-4">
-      @if($channelID !='')
+        <h3>No Videos for this Campaign</h3>
+      {{-- @if($channelID !='')
         {{ $channelID }}
-      @endif
+      @endif --}}
     </div>
+    @endif
 </div>

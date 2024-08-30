@@ -69,7 +69,7 @@ class VideoTable extends Component
 
     public function render()
     {
-        // dd($this->campaignID);
+        
         $channelID = $this->channelID;
         return view('livewire.video-table', ['channelID' => $this->channelID, 'videos' => $this->videos]);
     }

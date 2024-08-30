@@ -36,7 +36,8 @@ class VideosRelationManager extends RelationManager
                     FileUpload::make('download_url')
                                     ->disk('public')
                                     ->directory('videos')
-                                    ->label('Video File') 
+                                    ->label('Video File')
+                                    ->preserveFilenames() 
                                     ->afterStateUpdated(function ($state, callable $set) {
                                         $fileSize = $state->getSize() / (1024 * 1024); // Size in KB
                                         $set('size', number_format($fileSize, 2));

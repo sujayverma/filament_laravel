@@ -13,12 +13,40 @@ class CampaignVideoSelectionMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $campaign;
+    public $videos;
+    public $channelName;
+    public $channelToEmail;
+    public $clientName;
+    public $clientToEmail;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos)
     {
         //
+        $this->campaign = $campaign;
+        $this->videos = $videos;
+        $this->channelName = $channelName;
+        $this->channelToEmail = $channelToEmail;
+        $this->clientName = $clientName;
+        $this->clientToEmail = $clientToEmail;
+    }
+
+
+    public function build()
+    {
+        return $this->view('emails.campaign-video-selection')
+                    ->subject('Selected Videos for Campaign')
+                    ->with([
+                        'campaign' => $this->campaign,
+                        'videos' => $this->videos,
+                        'channelName' => $this->channelName,
+                        'channelToEmail' => $this->channelToEmail,
+                        'clientName' => $this->clientName,
+                        'clientToEmail' => $this->clientToEmail,
+                    ]);
     }
 
     /**
