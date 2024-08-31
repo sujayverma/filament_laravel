@@ -1,4 +1,4 @@
-<div class="overflow-y-auto">
+<div class="overflow-y-auto" style="height: 450px;">
     <table class="min-w-full divide-y divide-gray-200 overflow-y-scroll" width="100%">
         <thead class="bg-gray-50">
             <tr>
