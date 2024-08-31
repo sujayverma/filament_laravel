@@ -72,7 +72,10 @@ class VideosRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('download_url')->label('Filename'),
                 Tables\Columns\TextColumn::make('caption'),
                 Tables\Columns\TextColumn::make('Language'),
-                Tables\Columns\TextColumn::make('size'),
+                Tables\Columns\TextColumn::make('properties')->label('Properties')
+                ->formatStateUsing(function($record){
+                    return "Length: {$record->length} \n Frames: {$record->frames} \n Size: {$record->size}M";
+                })->wrap(),
                 Tables\Columns\TextColumn::make('beta_no')->label('Tvc ID'),
             ])
             ->filters([
