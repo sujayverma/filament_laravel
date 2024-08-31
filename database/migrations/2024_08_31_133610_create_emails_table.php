@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('emails', function (Blueprint $table) {
             $table->id()->unsigned();
             $table->integer('channel_id')->unsigned();
-            $table->string('video_ids', 128)->charset('utf8mb4')->nullable();
+            $table->text('video_ids')->charset('utf8mb4')->nullable();
             $table->string('email_subject',128)->charset('utf8mb4')->nullable();
             $table->text('email_message')->charset('utf8mb4')->nullable();
             $table->string('attach_type',32)->charset('utf8mb4')->default('send_link'); 

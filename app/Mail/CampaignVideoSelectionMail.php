@@ -19,11 +19,14 @@ class CampaignVideoSelectionMail extends Mailable
     public $channelToEmail;
     public $clientName;
     public $clientToEmail;
+    public $orderID;
+    public $brandName;
+    public $agency;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos)
+    public function __construct($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $orderID, $brandName, $agency)
     {
         //
         $this->campaign = $campaign;
@@ -32,12 +35,15 @@ class CampaignVideoSelectionMail extends Mailable
         $this->channelToEmail = $channelToEmail;
         $this->clientName = $clientName;
         $this->clientToEmail = $clientToEmail;
+        $this->orderID = $orderID;
+        $this->brandName = $brandName;
+        $this->agency = $agency;
     }
 
 
     public function build()
     {
-        return $this->view('emails.campaign-video-selection')
+        return $this->view('emails.email-template')
                     ->subject('Selected Videos for Campaign')
                     ->with([
                         'campaign' => $this->campaign,
@@ -46,36 +52,39 @@ class CampaignVideoSelectionMail extends Mailable
                         'channelToEmail' => $this->channelToEmail,
                         'clientName' => $this->clientName,
                         'clientToEmail' => $this->clientToEmail,
+                        'orderID' => $this->orderID,
+                        'brandName' => $this->brandName,
+                        'agency' => $this->agency,
                     ]);
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Campaign Video Selection Mail',
-        );
-    }
+    // /**
+    //  * Get the message envelope.
+    //  */
+    // public function envelope(): Envelope
+    // {
+    //     return new Envelope(
+    //         subject: 'Campaign Video Selection Mail',
+    //     );
+    // }
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'view.name',
-        );
-    }
+    // /**
+    //  * Get the message content definition.
+    //  */
+    // public function content(): Content
+    // {
+    //     return new Content(
+    //         view: 'view.name',
+    //     );
+    // }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
-    }
+    // /**
+    //  * Get the attachments for the message.
+    //  *
+    //  * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+    //  */
+    // public function attachments(): array
+    // {
+    //     return [];
+    // }
 }

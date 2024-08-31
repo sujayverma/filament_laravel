@@ -8,7 +8,10 @@ use App\Models\Campaign;
 use App\Models\Channel;
 use App\Models\setting;
 use App\Models\Video;
+use App\Models\Email;
+use App\Models\OrderDetail;
 use App\Mail\CampaignVideoSelectionMail;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
@@ -87,6 +90,7 @@ class CampaignResource extends Resource
                 ->icon('heroicon-m-envelope')
                 ->iconButton()
                 ->label('Send Email to Channels')
+               
                 ->steps(fn ($record) => static::getWizardForm($record))
                 ->action(function (array $data, $record): void {
                     if (session()->get('channel_id')==null) {
@@ -116,8 +120,19 @@ class CampaignResource extends Resource
                     $clientToEmail = $record->client->email;
                     $campaign = $record;
                     $videos = Video::whereIn('id', session()->get('selected_videos'))->get()->toArray();
+                    $email = Email::create([
+                        'channel_id' => session()->get('channel_id'),
+                        'video_ids' => json_encode(session()->get('selected_videos')),
+                        'sending_date_time' => Carbon::now(), // Always encrypt passwords
+                    ]);
+                    $order = OrderDetail::create([
+                        'email_id' => $email->id
+                    ]);
+                    $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
+                    
                     // Mail::to($campaign->client->email)->send(new CampaignVideoSelectionMail($campaign, $videos));
-                    $mail = new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos);
+                    $mail = new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency);
+                    dd($mail);
                 }),
                 Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\DeleteAction::make()->label(''),

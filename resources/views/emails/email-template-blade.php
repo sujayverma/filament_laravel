@@ -59,10 +59,10 @@ Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from t
 <td width="10%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#00aed6">Channel Name<u></u><u></u></span></p>
 </td>
-<td width="15%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
+<td width="10%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#00aed6">Client Name<u></u><u></u></span></p>
 </td>
-<td width="15%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
+<td width="10%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#00aed6">Brand Name<u></u><u></u></span></p>
 </td>
 <td width="10%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
@@ -77,37 +77,42 @@ Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from t
 <td width="10%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#00aed6">TVC ID<u></u><u></u></span></p>
 </td>
+<td width="10%" style="width:10.0%;background:#2A0000;padding:1.5pt 1.5pt 1.5pt 1.5pt">
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#00aed6">Download<u></u><u></u></span></p>
+</td>
 </tr>
 
 @foreach($videos as $video)
 <tr>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 6.0pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><?php echo $order; ?><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"> {{ $orderID }}<u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><?php echo $channels; ?><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"> {{ $channelName }} <u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><?php echo $client; ?><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"> {{ $clientName }} <u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><?php echo $brand; ?><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada">{{ $brandName }} <u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><?php echo $videos[$i]["caption"]; ?><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"> {{ $video["caption"] }} <u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><?php echo $videos[$i]["language"]; ?><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"> {{ $video["language"] }} <u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"> 
-			Length: <?php echo $videos[$i]["length"]; ?><br/>
-            Frames: <?php echo $videos[$i]["frames"]; ?><br/>
-            <?php $s=$videos[$i]["size"]; $size=0; if($s>1000000000) $size=round(($s/1000000000),3)." GM"; elseif ($s>1000000) $size=round(($s/1000000),3). " MB"; else $size=round(($s/1000),3). " KB"; ?>
-            Size  : <?php echo $size; ?><u></u><u></u></span></p>
+			Length: {{ $video["length"] }} <br/>
+            Frames: {{ $video["frames"] }} <br/>
+            Size  : {{ $video["size"] }}<u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><?php echo $videos[$i]["beta_no"]; ?><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada">{{ $video["beta_no"] }}<u></u><u></u></span></p>
+</td>
+<td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><a href="{{ route('videos.download', $video["id"]) }}"> Download <i class="fa fa-download"></i></a><u></u><u></u></span></p>
 </td>
 </tr>
 @endforeach
@@ -124,12 +129,16 @@ Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from t
 <th align="left" style="font-family:Trebuchet MS;font-weight:normal;font-size:12px;color:#00aed6">Agency Name</th>
 <th align="left" style="font-family:Trebuchet MS;font-weight:normal;font-size:12px;color:#00aed6">File Name</th>
 </tr>
-<?php for($i=0; $i<count($videos); $i++ ): $filename = $videos[$i]["download_url"]; ?>
+@foreach($videos as $video)
 <tr>
 <td align="left" style="font-family:Trebuchet MS;color:#dadada;font-size:11px"><?php echo $agency; ?></td>
-<td align="left" style="font-family:Trebuchet MS;color:#dadada;font-size:11px"><?php echo $videos[$i]["download_url"]; ?></td>
+@php
+$v = $video["download_url"];
+$vname = explode('/', $v);
+@endphp
+<td align="left" style="font-family:Trebuchet MS;color:#dadada;font-size:11px">{{ $vname[1] }}</td>
 </tr>
-<?php endfor; ?>
+@endforeach
 </tbody>
 </table>
 {videos}
@@ -166,3 +175,4 @@ Contact Us :<br>MailId : <a style="font-size:8.5pt;color:#00aed6" href="mailto:s
 </table>
 </body>
 </html>
+
