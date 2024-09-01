@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\EmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,4 @@ Route::get('/', function () {
 });
 
 Route::get('/videos/download/{id}', [VideoController::class, 'download'])->name('videos.download');
+Route::get('/posts/print', [EmailController::class, 'print'])->name('posts.print');

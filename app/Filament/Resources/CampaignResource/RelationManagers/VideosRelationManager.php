@@ -72,7 +72,7 @@ class VideosRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('download_url')->label('Filename'),
                 Tables\Columns\TextColumn::make('caption'),
                 Tables\Columns\TextColumn::make('Language'),
-                Tables\Columns\TextColumn::make('properties')->label('Properties')
+                Tables\Columns\TextColumn::make('length')->label('Properties')
                 ->formatStateUsing(function($record){
                     return "Length: {$record->length} \n Frames: {$record->frames} \n Size: {$record->size}M";
                 })->wrap(),
