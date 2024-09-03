@@ -1,0 +1,1 @@
+<img src="{{ asset('img/abaccus.png') }}" alt="Dashboard Logo" style="height:45px; width:200px; margin-bottom:5px; border-radius:6px;">

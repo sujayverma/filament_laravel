@@ -15,7 +15,7 @@ use App\Model\Channel;
     </style>
 </head>
 <body>
-    <h1>Emails</h1>
+    
     <table>
         <thead>
             <tr>

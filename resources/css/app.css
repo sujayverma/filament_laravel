@@ -1,0 +1,14 @@
+/* Change the background color of the sidebar */
+.filament-sidebar {
+    background-color: #1e293b; /* Change this to your desired color */
+}
+
+/* Optional: Customize the text color in the sidebar */
+.filament-sidebar .filament-sidebar-item {
+    color: #ffffff; /* Change this to your desired text color */
+}
+
+/* Optional: Customize the hover color for items in the sidebar */
+.filament-sidebar .filament-sidebar-item:hover {
+    background-color: #334155; /* Change this to your desired hover color */
+}
