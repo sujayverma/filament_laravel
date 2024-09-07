@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Abaccus | About')
 @section('content')
 
         <!-- Start Page Banner -->

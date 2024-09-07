@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     {{-- <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('backend/assets/images/favicon_ct.ico') }}"> --}}
-    <title>Abaccus | Home</title>
+    <title>@yield('title', 'Default Title')</title>
      <!-- Define Charset -->
      <meta charset="utf-8">
 
@@ -130,14 +130,14 @@
                     <!-- Start Navigation List -->
                     <ul class="nav navbar-nav navbar-right">
                                         <li>
-                            <a class="active" href="{{ route('home') }}">Home</a>
+                            <a class=" {{ Route::is('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
                         </li>
                         <li>
-                            <a class="" href="{{ route('about') }}">About Us</a>
+                            <a class=" {{ Route::is('about') ? 'active' : '' }}" href="{{ route('about') }}">About Us</a>
                         </li>
                        
                         <li>
-                            <a class="" href="javascript:void(0)">Contact</a>
+                            <a class=" {{ Route::is('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Contact</a>
                         </li>
                         <li>
                             <a class="" href="{{ route('filament.admin.auth.login') }}">Login</a>

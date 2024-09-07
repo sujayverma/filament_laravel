@@ -21,6 +21,8 @@ use App\Http\Controllers\HomeController;
 // });
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/store', [HomeController::class, 'store'])->name('contact.submit');
 
 Route::get('/videos/download/{id}', [VideoController::class, 'download'])->name('videos.download');
 Route::get('/posts/print', [EmailController::class, 'print'])->name('posts.print');

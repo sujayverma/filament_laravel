@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Abaccus | Home')
 @section('content')
 <!-- Start Home Page Slider -->
 <section id="home">
