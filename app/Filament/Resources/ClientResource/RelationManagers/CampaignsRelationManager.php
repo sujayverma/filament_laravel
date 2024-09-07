@@ -14,6 +14,18 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
+use App\Models\Campaign;
+use App\Models\Channel;
+use App\Models\setting;
+use App\Models\Video;
+use App\Models\Email;
+use App\Models\OrderDetail;
+use App\Mail\CampaignVideoSelectionMail;
+use Carbon\Carbon;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
+
+use Filament\Forms\Components\Wizard\Step;
 
 class CampaignsRelationManager extends RelationManager
 {
@@ -54,6 +66,54 @@ class CampaignsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Action::make('Mail')
+                ->icon('heroicon-m-envelope')
+                ->iconButton()
+                ->label('Send Email to Channels')
+               
+                ->steps(fn ($record) => static::getWizardForm($record))
+                ->action(function (array $data, $record): void {
+                    if (session()->get('channel_id')==null) {
+                        Notification::make()
+                            ->title('Error')
+                            ->body('Please select a Channel')
+                            ->danger()
+                            ->send();
+                        
+                        return; // Stop further processing if there is an error
+                    }
+
+                    if (session()->get('selected_videos')==null) {
+                        Notification::make()
+                            ->title('Error')
+                            ->body('Please select a video')
+                            ->danger()
+                            ->send();
+                        
+                        return; // Stop further processing if there is an error
+                    }
+                   
+                    $channels = Channel::where('id', session()->get('channel_id'))->select('name', 'email')->get()->toArray();
+                    $channelName = $channels[0]['name'];
+                    $channelToEmail = $channels[0]['email'];
+                    $clientName = $record->client->name;
+                    $clientToEmail = $record->client->email;
+                    $campaign = $record;
+                    $videos = Video::whereIn('id', session()->get('selected_videos'))->get()->toArray();
+                    $email = Email::create([
+                        'channel_id' => session()->get('channel_id'),
+                        'video_ids' => json_encode(session()->get('selected_videos')),
+                        'sending_date_time' => Carbon::now(), // Always encrypt passwords
+                    ]);
+                    $order = OrderDetail::create([
+                        'email_id' => $email->id
+                    ]);
+                    $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
+                    
+                    // Mail::to($campaign->client->email)->send(new CampaignVideoSelectionMail($campaign, $videos));
+                    $mail = new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency);
+                    dd($mail);
+                }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -62,5 +122,32 @@ class CampaignsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    protected static function getWizardForm($record): array
+    {
+       
+        return [
+                    Step::make('Select Channels')
+                        ->schema([
+                            Forms\Components\View::make('livewire-channel-table')
+                            ]),
+                            
+                    Step::make('Select Videos')
+                        ->schema([
+                            Forms\Components\View::make('livewire-video-table')
+                            ->viewData(['campaignId' => $record->id])
+                        ]),
+                     
+                        
+                    Step::make('Email Contents')
+                        ->schema([
+                            RichEditor::make('Email')->disableAllToolbarButtons()
+                            ->default(setting::where('setting_key', 'email_message')->pluck('setting_value')->first()),
+                           
+                            // Fields for the third step
+                        ]),
+                   
+        ];
     }
 }
