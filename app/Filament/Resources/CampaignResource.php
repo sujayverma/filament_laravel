@@ -113,7 +113,8 @@ class CampaignResource extends Resource
                         return; // Stop further processing if there is an error
                     }
                    
-                    $channels = Channel::where('id', session()->get('channel_id'))->select('name', 'email')->get()->toArray();
+                    $channels = Channel::whereIn('id', session()->get('channel_id'))->select('name', 'email')->get()->toArray();
+                    dd($channels);
                     $channelName = $channels[0]['name'];
                     $channelToEmail = $channels[0]['email'];
                     $clientName = $record->client->name;

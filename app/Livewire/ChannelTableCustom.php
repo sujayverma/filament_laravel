@@ -32,20 +32,25 @@ class ChannelTableCustom extends Component
     {
         if (isset($this->checkedItems[$value]) && $this->checkedItems[$value]) 
         {
-            $this->addRows($value);
-        } else {
-            $this->addRows('');
+            $i = 0;
+            foreach($this->checkedItems as $key=>$value)
+            {
+                if($value)
+                    $this->selectedRows[$i] = $key;  
+                $i++;
+            }
+            $this->resetSession();
+            session()->put('channel_id', $this->selectedRows);
         }
         
     }
 
-
-
-    public function addRows($value, $extraData = null)
+    public function resetSession()
     {
-        $this->selected = $value;
-        $this->dispatch('channelsSelected', $this->selected);
+        session()->forget(['channel_id']);
     }
+
+
 
     public function search()
     {

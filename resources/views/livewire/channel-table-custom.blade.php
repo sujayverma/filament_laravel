@@ -103,7 +103,7 @@
             
         @endif
         @if(count($selectedRows) > 0)
-        {{ dd($selectedRows) }}
+        {{-- {{ dd($selectedRows) }} --}}
             <button wire:click="unselectAll" class="bg-red-500 text-white p-2 rounded">Unselect All</button>
         @endif
     </div>

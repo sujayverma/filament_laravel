@@ -49,7 +49,6 @@ class VideoTable extends Component
                 $i++;
             }
             $this->resetSession();
-            session()->put('channel_id', $this->channelID);
             session()->put('selected_videos', $this->selectedRows);
             
         } 
@@ -64,7 +63,7 @@ class VideoTable extends Component
     
     public function resetSession()
     {
-        session()->forget(['channel_id', 'selected_videos']);
+        session()->forget(['selected_videos']);
     }
 
     public function render()
