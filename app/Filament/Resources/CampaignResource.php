@@ -135,32 +135,38 @@ class CampaignResource extends Resource
                             'email_id' => $email->id
                         ]);
                         $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
-                        Mail::to($campaign->client->email)->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject));
-                        if (Mail::failures()) {
+                        // $campaign->client->email
+                        $to ='sujayverma124@gmail.com';
+                        $rep = explode(',', $to);
+                        if(Mail::to($rep)->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject)))
+                        {
                             Email::where('id', $email->id)->update([
-                                'email_subject ' => $subject,
-                                'status' => 'failed',
+                            'email_subject' => $subject,
+                            'status' => 'delivered',
                             ]);
                             // Handle the case where the mail failed to send
-                             Notification::make()
-                                ->title('Error')
-                                ->body('Mail Sending Failed')
-                                ->danger()
+                            Notification::make()
+                                ->title('Success')
+                                ->body('Mail Sending Succesfully!')
+                                ->success()
                                 ->send();
-                            return;    
+                            return;
                         }
-
+                        
                         Email::where('id', $email->id)->update([
-                            'email_subject ' => $subject,
-                            'status' => 'delivered',
+                            'email_subject' => $subject,
+                            'status' => 'failed',
                         ]);
                         // Handle the case where the mail failed to send
-                        Notification::make()
-                            ->title('Success')
-                            ->body('Mail Sending Succesfully!')
+                         Notification::make()
+                            ->title('Error')
+                            ->body('Mail Sending Failed')
                             ->danger()
                             ->send();
-                        return;
+                        return;    
+                   
+
+                        
 
                     }
 

@@ -141,7 +141,7 @@ $vname = explode('/', $v);
 @endforeach
 </tbody>
 </table>
-{videos}
+
 <span class="im">
 <p class="MsoNormal">
 <span style="font-size:10.0pt;color:#dadada"><br><br>Thanking You, <br></span>

@@ -15,7 +15,8 @@ class VideoController extends Controller
          $video = Video::findOrFail($id);
  
          // Get the storage path to the file
-         $path = storage_path('app/public/' . $video->download_url);
+         $path = public_path( $video->download_url);
+        //  $path = storage_path('app/public/' . $video->download_url);
  
          // Return the file as a response, prompting the user to download it
          return response()->download($path);
