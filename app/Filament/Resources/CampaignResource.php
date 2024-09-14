@@ -42,6 +42,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Str;
 use App\View\Components\ChannelTable;
 use Filament\Forms\Components\Repeater;
+use Illuminate\Support\Facades\Mail;
 
 class CampaignResource extends Resource
 {
@@ -113,27 +114,56 @@ class CampaignResource extends Resource
                         return; // Stop further processing if there is an error
                     }
                    
-                    $channels = Channel::whereIn('id', session()->get('channel_id'))->select('name', 'email')->get()->toArray();
-                    dd($channels);
-                    $channelName = $channels[0]['name'];
-                    $channelToEmail = $channels[0]['email'];
-                    $clientName = $record->client->name;
-                    $clientToEmail = $record->client->email;
-                    $campaign = $record;
-                    $videos = Video::whereIn('id', session()->get('selected_videos'))->get()->toArray();
-                    $email = Email::create([
-                        'channel_id' => session()->get('channel_id'),
-                        'video_ids' => json_encode(session()->get('selected_videos')),
-                        'sending_date_time' => Carbon::now(), // Always encrypt passwords
-                    ]);
-                    $order = OrderDetail::create([
-                        'email_id' => $email->id
-                    ]);
-                    $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
+                    $channels = Channel::whereIn('id', session()->get('channel_id'))->select('id', 'name', 'email')->get()->toArray();
                     
-                    // Mail::to($campaign->client->email)->send(new CampaignVideoSelectionMail($campaign, $videos));
-                    $mail = new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency);
-                    dd($mail);
+                    foreach($channels as $channel)
+                    {
+                        $channelName = $channel['name'];
+                        $channelToEmail = $channel['email'];
+                        $clientName = $record->client->name;
+                        $clientToEmail = $record->client->email;
+                        $campaign = $record;
+                        $videos = Video::whereIn('id', session()->get('selected_videos'))->get()->toArray();
+                        
+                        $email = Email::create([
+                            'channel_id' => $channel['id'],
+                            'video_ids' => json_encode(session()->get('selected_videos')),
+                            'sending_date_time' => Carbon::now(), // Always encrypt passwords
+                        ]);
+                        // dd($email);
+                        $order = OrderDetail::create([
+                            'email_id' => $email->id
+                        ]);
+                        $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
+                        Mail::to($campaign->client->email)->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject));
+                        if (Mail::failures()) {
+                            Email::where('id', $email->id)->update([
+                                'email_subject ' => $subject,
+                                'status' => 'failed',
+                            ]);
+                            // Handle the case where the mail failed to send
+                             Notification::make()
+                                ->title('Error')
+                                ->body('Mail Sending Failed')
+                                ->danger()
+                                ->send();
+                            return;    
+                        }
+
+                        Email::where('id', $email->id)->update([
+                            'email_subject ' => $subject,
+                            'status' => 'delivered',
+                        ]);
+                        // Handle the case where the mail failed to send
+                        Notification::make()
+                            ->title('Success')
+                            ->body('Mail Sending Succesfully!')
+                            ->danger()
+                            ->send();
+                        return;
+
+                    }
+
                 }),
                 Tables\Actions\EditAction::make()->label(''),
                 Tables\Actions\DeleteAction::make()->label(''),

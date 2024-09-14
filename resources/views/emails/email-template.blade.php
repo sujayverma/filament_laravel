@@ -47,7 +47,7 @@ Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from t
 </p>
 
 </span>
-{videos}
+
 <table border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100.0%;border-collapse:collapse">
 <tbody>
 <tr>
@@ -112,7 +112,7 @@ Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from t
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada">{{ $video["beta_no"] }}<u></u><u></u></span></p>
 </td>
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><a href="{{ route('videos.download', $video["id"]) }}"> Download <i class="fa fa-download"></i></a><u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><a href="{{ route('videos.download', $video['id']) }}"> Download <i class="fa fa-download"></i></a><u></u><u></u></span></p>
 </td>
 </tr>
 @endforeach
