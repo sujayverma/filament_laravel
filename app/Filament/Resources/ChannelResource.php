@@ -40,7 +40,8 @@ class ChannelResource extends Resource
         return $table
             ->columns([
                 //
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('id')->toggleable(isToggledHiddenByDefault:true)->sortable(),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('contact_person'),
                 Tables\Columns\TextColumn::make('email')->wrap(),
                 Tables\Columns\TextColumn::make('phone_no'),

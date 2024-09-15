@@ -49,7 +49,7 @@ class CampaignResource extends Resource
     private static $storedInstance;
     protected static ?string $model = Campaign::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tv';
 
     public int $channelID;
     public int|array $videoIDs;
@@ -113,7 +113,6 @@ class CampaignResource extends Resource
                         
                         return; // Stop further processing if there is an error
                     }
-                   
                     $channels = Channel::whereIn('id', session()->get('channel_id'))->select('id', 'name', 'email')->get()->toArray();
                     
                     foreach($channels as $channel)
@@ -128,21 +127,23 @@ class CampaignResource extends Resource
                         $email = Email::create([
                             'channel_id' => $channel['id'],
                             'video_ids' => json_encode(session()->get('selected_videos')),
-                            'sending_date_time' => Carbon::now(), // Always encrypt passwords
+                            'sending_date_time' => Carbon::now(), 
                         ]);
                         // dd($email);
                         $order = OrderDetail::create([
                             'email_id' => $email->id
                         ]);
                         $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
-                        // $campaign->client->email
-                        $to ='sujayverma124@gmail.com';
+                        $to = $campaign->client->email;
+                        // $to ='sujayverma124@gmail.com';
+                        $to .= ',studios@abaccusproductions.com';
                         $rep = explode(',', $to);
-                        if(Mail::to($rep)->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject)))
+                        if(Mail::to($rep)->bcc([$clientToEmail])->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject)))
                         {
                             Email::where('id', $email->id)->update([
                             'email_subject' => $subject,
                             'status' => 'delivered',
+                            'delivered_date_time' => Carbon::now(),
                             ]);
                             // Handle the case where the mail failed to send
                             Notification::make()
@@ -150,23 +151,22 @@ class CampaignResource extends Resource
                                 ->body('Mail Sending Succesfully!')
                                 ->success()
                                 ->send();
-                            return;
+                            // return;
                         }
-                        
-                        Email::where('id', $email->id)->update([
-                            'email_subject' => $subject,
-                            'status' => 'failed',
-                        ]);
-                        // Handle the case where the mail failed to send
-                         Notification::make()
-                            ->title('Error')
-                            ->body('Mail Sending Failed')
-                            ->danger()
-                            ->send();
-                        return;    
-                   
-
-                        
+                        else
+                        {
+                            Email::where('id', $email->id)->update([
+                                'email_subject' => $subject,
+                                'status' => 'failed',
+                            ]);
+                            // Handle the case where the mail failed to send
+                             Notification::make()
+                                ->title('Error')
+                                ->body('Mail Sending Failed')
+                                ->danger()
+                                ->send();
+                            // return;    
+                        }
 
                     }
 

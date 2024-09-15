@@ -53,7 +53,7 @@ class CampaignsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                 ->sortable()
-                ->url(fn ($record) => route('filament.admin.resources.campaigns.index', ['record' => $record->id])),
+                ->url(fn ($record) => route('filament.admin.resources.campaigns.edit', ['record' => $record->id])),
                 Tables\Columns\TextColumn::make('agency'),
                 Tables\Columns\TextColumn::make('brand'),
                 Tables\Columns\TextColumn::make('status'),
@@ -92,27 +92,62 @@ class CampaignsRelationManager extends RelationManager
                         
                         return; // Stop further processing if there is an error
                     }
-                   
-                    $channels = Channel::where('id', session()->get('channel_id'))->select('name', 'email')->get()->toArray();
-                    $channelName = $channels[0]['name'];
-                    $channelToEmail = $channels[0]['email'];
-                    $clientName = $record->client->name;
-                    $clientToEmail = $record->client->email;
-                    $campaign = $record;
-                    $videos = Video::whereIn('id', session()->get('selected_videos'))->get()->toArray();
-                    $email = Email::create([
-                        'channel_id' => session()->get('channel_id'),
-                        'video_ids' => json_encode(session()->get('selected_videos')),
-                        'sending_date_time' => Carbon::now(), // Always encrypt passwords
-                    ]);
-                    $order = OrderDetail::create([
-                        'email_id' => $email->id
-                    ]);
-                    $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
+                    $channels = Channel::whereIn('id', session()->get('channel_id'))->select('id', 'name', 'email')->get()->toArray();
                     
-                    // Mail::to($campaign->client->email)->send(new CampaignVideoSelectionMail($campaign, $videos));
-                    $mail = new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency);
-                    dd($mail);
+                    foreach($channels as $channel)
+                    {
+                        $channelName = $channel['name'];
+                        $channelToEmail = $channel['email'];
+                        $clientName = $record->client->name;
+                        $clientToEmail = $record->client->email;
+                        $campaign = $record;
+                        $videos = Video::whereIn('id', session()->get('selected_videos'))->get()->toArray();
+                        
+                        $email = Email::create([
+                            'channel_id' => $channel['id'],
+                            'video_ids' => json_encode(session()->get('selected_videos')),
+                            'sending_date_time' => Carbon::now(), 
+                        ]);
+                        // dd($email);
+                        $order = OrderDetail::create([
+                            'email_id' => $email->id
+                        ]);
+                        $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
+                        $to = $campaign->client->email;
+                        // $to ='sujayverma124@gmail.com';
+                        $to .= ',studios@abaccusproductions.com';
+                        $rep = explode(',', $to);
+                        if(Mail::to($rep)->bcc([$clientToEmail])->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject)))
+                        {
+                            Email::where('id', $email->id)->update([
+                            'email_subject' => $subject,
+                            'status' => 'delivered',
+                            'delivered_date_time' => Carbon::now(),
+                            ]);
+                            // Handle the case where the mail failed to send
+                            Notification::make()
+                                ->title('Success')
+                                ->body('Mail Sending Succesfully!')
+                                ->success()
+                                ->send();
+                            // return;
+                        }
+                        else
+                        {
+                            Email::where('id', $email->id)->update([
+                                'email_subject' => $subject,
+                                'status' => 'failed',
+                            ]);
+                            // Handle the case where the mail failed to send
+                             Notification::make()
+                                ->title('Error')
+                                ->body('Mail Sending Failed')
+                                ->danger()
+                                ->send();
+                            // return;    
+                        }
+
+                    }
                 }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

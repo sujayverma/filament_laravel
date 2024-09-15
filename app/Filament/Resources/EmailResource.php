@@ -20,7 +20,7 @@ class EmailResource extends Resource
 {
     protected static ?string $model = Email::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
     public static function form(Form $form): Form
     {
@@ -35,6 +35,7 @@ class EmailResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->toggleable(isToggledHiddenByDefault:true)->sortable(),
                 Tables\Columns\TextColumn::make('channel_id')
                 ->sortable()
                 ->searchable()
@@ -77,6 +78,7 @@ class EmailResource extends Resource
 
                
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])
