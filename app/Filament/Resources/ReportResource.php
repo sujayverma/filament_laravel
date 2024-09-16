@@ -49,6 +49,7 @@ class ReportResource extends Resource
                 Tables\Columns\TextColumn::make('email.attach_type')->label('Sent As'),
                 Tables\Columns\TextColumn::make('agency')
             ])
+            ->defaultSort('id', 'desc')
             ->filters([
                 //
             ])

@@ -135,7 +135,7 @@ class CampaignResource extends Resource
                             'email_id' => $email->id
                         ]);
                         $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
-                        $to = $campaign->client->email;
+                        $to = $channelToEmail;
                         // $to ='sujayverma124@gmail.com';
                         $to .= ',studios@abaccusproductions.com';
                         $rep = explode(',', $to);
@@ -249,8 +249,6 @@ class CampaignResource extends Resource
         }
         
     }
-
-    
 
    
 }

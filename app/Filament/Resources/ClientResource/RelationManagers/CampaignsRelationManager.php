@@ -20,10 +20,12 @@ use App\Models\setting;
 use App\Models\Video;
 use App\Models\Email;
 use App\Models\OrderDetail;
+use App\Models\Report;
 use App\Mail\CampaignVideoSelectionMail;
 use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Mail;
 
 use Filament\Forms\Components\Wizard\Step;
 
@@ -113,7 +115,7 @@ class CampaignsRelationManager extends RelationManager
                             'email_id' => $email->id
                         ]);
                         $subject = "Ad delivered: ID-".($order->id) .", TITLE-".$videos[0]['caption'].", BRAND-".$campaign->brand;
-                        $to = $campaign->client->email;
+                        $to = $channelToEmail;
                         // $to ='sujayverma124@gmail.com';
                         $to .= ',studios@abaccusproductions.com';
                         $rep = explode(',', $to);
@@ -124,6 +126,7 @@ class CampaignsRelationManager extends RelationManager
                             'status' => 'delivered',
                             'delivered_date_time' => Carbon::now(),
                             ]);
+                            static::addReport($order->id, $channelName, $campaign->name, $clientName, $campaign->brand, $campaign->agency, $email->id, $videos);
                             // Handle the case where the mail failed to send
                             Notification::make()
                                 ->title('Success')
@@ -184,5 +187,28 @@ class CampaignsRelationManager extends RelationManager
                         ]),
                    
         ];
+    }
+
+
+    protected static function addReport($orderId, $channelName, $campaignName, $clientName, $brand, $agency, $emailID, $videos)
+    {
+        foreach($videos as $video)
+        {
+            $report = Report::create(
+                [
+                    'order_id' => $orderId,
+                    'email_id' => $emailID,
+                    'channel_name' => $channelName,
+                    'title' => $campaignName,
+                    'client_name' => $clientName,
+                    'brand_name' => $brand,
+                    'duration' => $video['length'],
+                    'language' => $video['language'],
+                    'tvc_id' => $video['beta_no'],
+                    'agency' => $agency
+                ]
+            );
+        }
+        
     }
 }
