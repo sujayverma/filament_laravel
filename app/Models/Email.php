@@ -29,4 +29,10 @@ class Email extends Model
     {
         return $this->hasOne(OrderDetail::class);
     }
+
+
+    public function reports()
+    {
+        return $this->hasMany('App\Models\Report');
+    }
 }
