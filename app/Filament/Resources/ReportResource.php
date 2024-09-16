@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportsExport;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Collection;
 
 class ReportResource extends Resource
 {
@@ -57,9 +59,10 @@ class ReportResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\BulkAction::make('export')
-                    ->label('Export TO Excel')
-                    ->action(function (array $records){
-                        return Excel::download(new ReportsExport($records), 'reports.xlsx');
+                    ->label('Export To Excel')
+                    ->action(function ( $records){
+                        $recordIds = $records->pluck('id')->toArray();
+                        return Excel::download(new ReportsExport($recordIds), 'reports.xlsx');
                     }),
                     // Tables\Actions\DeleteBulkAction::make(),
 

@@ -4,8 +4,10 @@ namespace App\Exports;
 use App\Models\Report;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ReportsExport implements FromCollection, WithHeadings
+class ReportsExport implements FromCollection, WithHeadings, WithStyles
 {
     protected $records;
 
@@ -24,19 +26,21 @@ class ReportsExport implements FromCollection, WithHeadings
         // Fetch the reports based on selected IDs
         return Report::whereIn('id', $this->records)
         ->with('email')
-        ->get([
-            'order_id', 
-            'channel_name', 
-            'title', 
-            'client_name', 
-            'brand_name', 
-            'duration', 
-            'language',
-            'tvc_id', 
-            'delivered_date_time',
-            'attach_type',
-            'agency', 
-        ]);
+        ->get( )->map(function($report){
+        	return [
+        		'order_id' => $report->order_id,
+        		'channel_name' => $report->channel_name,
+        		'title' => $report->title,
+        		'client_name' => $report->client_name,
+        		'brand_name' => $report->brand_name,
+        		'duration' => $report->duration,
+        		'language' => $report->language,
+        		'tvc_id' => $report->tvc_id,
+        		'delivered_date_time' => $report->email->delivered_date_time,
+        		'attach_type' => $report->email->attach_type,
+        		'agency' => $report->agency
+        	];
+        });
     }
 
      /**
@@ -56,6 +60,14 @@ class ReportsExport implements FromCollection, WithHeadings
             'STATUS DATE',
             'SENT AS',
             'AGENCY'
+        ];
+    }
+    
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            // Style the first row (1st row is heading)
+            1 => ['font' => ['bold' => true]],
         ];
     }
 }
