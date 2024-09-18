@@ -37,7 +37,11 @@
                         {{ $video->beta_no  }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
+                        @if($video->download_url != '')
                         {{ $video->download_url  }}
+                        @else
+                        {{ $video->filename }}
+                        @endif
                     </td>
                 </tr>
             @endforeach

@@ -111,9 +111,16 @@ Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from t
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada">{{ $video["beta_no"] }}<u></u><u></u></span></p>
 </td>
+
+@if($video['download_url'] != '')
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
 <p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><a href="{{ route('videos.download', $video['id']) }}"> Download <i class="fa fa-download"></i></a><u></u><u></u></span></p>
 </td>
+@else
+<td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada">{{ $video["filename"] }}<u></u><u></u></span></p>
+</td>
+@endif
 </tr>
 @endforeach
 </tbody>
@@ -133,10 +140,20 @@ Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from t
 <tr>
 <td align="left" style="font-family:Trebuchet MS;color:#dadada;font-size:11px"><?php echo $agency; ?></td>
 @php
-$v = $video["download_url"];
-$vname = explode('/', $v);
+$filename = '';
+if($video["download_url"]!='')
+{
+    $v = $video["download_url"];
+
+    $vname = explode('/', $v);
+    $filename = $vname[1];
+}
+else {
+    $filename = $video["filename"];
+}
+
 @endphp
-<td align="left" style="font-family:Trebuchet MS;color:#dadada;font-size:11px">{{ $vname[1] }}</td>
+<td align="left" style="font-family:Trebuchet MS;color:#dadada;font-size:11px">{{ $filename }}</td>
 </tr>
 @endforeach
 </tbody>
