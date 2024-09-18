@@ -20,6 +20,7 @@ class Video extends Model
         'beta_no',
         'caption',
         'download_url',
+        'filename',
         // 'download_channels',
         // 'downloadable',
         'status'

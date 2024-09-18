@@ -42,6 +42,7 @@ class VideosRelationManager extends RelationManager
                                         $fileSize = $state->getSize() / (1024 * 1024); // Size in KB
                                         $set('size', number_format($fileSize, 2));
                                     })->columnSpanFull(),
+                    TextInput::make('filename')->columnSpanFull(),
                     Group::make()->schema([
                         Group::make()->schema([
                             TextInput::make('name')->required(),
@@ -69,7 +70,19 @@ class VideosRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('download_url')->label('Filename'),
+                Tables\Columns\TextColumn::make('download_url')->label('Filename')
+                ->formatStateUsing(function($record) {
+                    $filename = '';
+                    if(strpos($record->download_url, '/'))
+                    {
+                        $filename = $record->download_url;
+                    }
+                    else
+                    {
+                        $filename = $record->filename;
+                    }
+                    return $filename;
+                }),
                 Tables\Columns\TextColumn::make('caption'),
                 Tables\Columns\TextColumn::make('Language'),
                 Tables\Columns\TextColumn::make('length')->label('Properties')
