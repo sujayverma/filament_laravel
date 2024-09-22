@@ -65,7 +65,8 @@ class CampaignsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->closeModalByClickingAway(false),
             ])
             ->actions([
                 Action::make('Mail')
@@ -152,7 +153,8 @@ class CampaignsRelationManager extends RelationManager
                         }
 
                     }
-                }),
+                })
+                ->closeModalByClickingAway(false),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

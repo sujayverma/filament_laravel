@@ -95,7 +95,8 @@ class VideosRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->closeModalByClickingAway(false),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
