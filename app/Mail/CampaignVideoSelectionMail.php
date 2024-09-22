@@ -59,7 +59,7 @@ class CampaignVideoSelectionMail extends Mailable
                         'orderID' => $this->orderID,
                         'brandName' => $this->brandName,
                         'agency' => $this->agency,
-                        'message' => $this->message
+                        'messages' => $this->message
                     ]);
     }
 

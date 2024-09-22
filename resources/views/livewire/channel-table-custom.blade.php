@@ -1,9 +1,26 @@
 <div class="overflow-y-auto" style="height: 450px;">
+    <div style="width: 98%;">
+    <div class="grid gap-y-2">
+        <label class="fi-fo-field-wrp-label inline-flex items-center gap-x-3">
+            <span class="text-sm font-medium leading-6 text-gray-950 dark:text-white">
+                Search
+            </span>
+        </label>
+    </div>
+    <div class="grid gap-y-2 mb-5">
+        <div class="fi-input-wrp flex rounded-lg shadow-sm ring-1 transition duration-75 bg-white dark:bg-white/5">
+            <div class="min-w-0 flex-1">
+            <input class="fi-input block w-full py-1.5 text-base text-gray-950 transition duration-75 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 bg-white/0 ps-3 pe-3" id="mountedTableActionsData.0.message" type="text" wire:model.live="search">
+            </div>
+        </div>
+    </div>
+    </div>
+
     <table class="fi-ta-table w-full table-auto divide-y divide-gray-200 text-start dark:divide-white/5 overflow-y-scroll" width="100%">
         <thead class="divide-y divide-gray-200 dark:divide-white/5">
             <tr class="bg-gray-50 dark:bg-white/5">
                 <th scope="col" class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-ta-selection-cell w-1" >
-                    <input type="checkbox" id="select-all" wire:click="toggleSelectAll">
+                    {{-- <input type="checkbox" id="select-all" wire:click="toggleSelectAll"> --}}
                 </th>
                 <th class="fi-ta-header-cell px-3 py-3.5 sm:first-of-type:ps-6 sm:last-of-type:pe-6 fi-table-header-cell-name" style=";">
                     <span class="group flex w-full items-center gap-x-1 whitespace-nowrap justify-start">
@@ -41,7 +58,7 @@
                     <td class="fi-ta-cell p-0 first-of-type:ps-1 last-of-type:pe-1 sm:first-of-type:ps-3 sm:last-of-type:pe-3 fi-ta-selection-cell w-1">
                         <div class="px-3 py-4">
                             <label class="flex">
-                                <input type="checkbox"   wire:model="checkedItems.{{ $channel->id }}" wire:change="handleCheckboxChange($event.target.value)"  name="selectedRows[]" value="{{ $channel->id }}">
+                                <input type="checkbox" id="{{ $channel->id }}_box"   wire:model="checkedItems.{{ $channel->id }}" wire:click="handleCheckboxChange($event.target.value)"  name="selectedRows[]" value="{{ $channel->id }}">
                             </label>
                         </div>
                     </td>

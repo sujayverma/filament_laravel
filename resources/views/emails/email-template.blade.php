@@ -34,7 +34,7 @@
 <td colspan="3" style="padding:7.5pt 7.5pt 7.5pt 7.5pt"><span class="im">
 <p class="MsoNormal" style="margin-bottom:12.0pt">
 <span style="font-size:10.0pt;color:#dadada">
-Hi, <br><br>I hope you will be fine...<br><br>Kindly download your videos from the given link
+Hi, <br><br>I hope you will be fine...<br><br>{{ $messages }}
 <u></u>
 <u></u>
 </span>

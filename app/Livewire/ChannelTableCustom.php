@@ -51,14 +51,6 @@ class ChannelTableCustom extends Component
     }
 
 
-
-    public function search()
-    {
-        // Access the current value of the input using the bound property
-        $searchValue = $this->searchTerm;
-        
-    }
-
     public function validateData()
     {
         $this->validate();
@@ -77,7 +69,7 @@ class ChannelTableCustom extends Component
     {
         $channels = Channel::query()
             ->where('name', 'like', "%{$this->search}%")
-            ->orderBy('id', 'desc')
+            ->orderBy('name')
             ->get();
         return view('livewire.channel-table-custom', compact('channels'));
     }
