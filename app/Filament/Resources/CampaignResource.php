@@ -92,7 +92,6 @@ class CampaignResource extends Resource
                 ->icon('heroicon-m-envelope')
                 ->iconButton()
                 ->label('Send Email to Channels')
-               
                 ->steps(fn ($record) => static::getWizardForm($record))
                 ->action(function (array $data, $record): void {
                     if (session()->get('channel_id')==null) {
@@ -104,7 +103,6 @@ class CampaignResource extends Resource
                         
                         return; // Stop further processing if there is an error
                     }
-
                     if (session()->get('selected_videos')==null) {
                         Notification::make()
                             ->title('Error')
@@ -114,6 +112,7 @@ class CampaignResource extends Resource
                         
                         return; // Stop further processing if there is an error
                     }
+                    $message = $data['message'];
                     $channels = Channel::whereIn('id', session()->get('channel_id'))->select('id', 'name', 'email')->get()->toArray();
                     
                     foreach($channels as $channel)
@@ -139,7 +138,7 @@ class CampaignResource extends Resource
                         // $to ='sujayverma124@gmail.com';
                         $to .= ',studios@abaccusproductions.com';
                         $rep = explode(',', $to);
-                        if(Mail::to($rep)->bcc([$clientToEmail])->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject)))
+                        if(Mail::to($rep)->bcc([$clientToEmail])->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject, $message)))
                         {
                             Email::where('id', $email->id)->update([
                             'email_subject' => $subject,
@@ -219,6 +218,7 @@ class CampaignResource extends Resource
                         
                     Step::make('Email Contents')
                         ->schema([
+                            TextInput::make('message')->required()->default('Kindly download your videos from the given link'),
                             RichEditor::make('Email')->disableAllToolbarButtons()
                             ->default(setting::where('setting_key', 'email_message')->pluck('setting_value')->first()),
                            

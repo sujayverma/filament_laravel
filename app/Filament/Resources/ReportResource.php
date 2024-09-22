@@ -38,8 +38,8 @@ class ReportResource extends Resource
             ->columns([
                 //
                 Tables\Columns\TextColumn::make('order_id')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('channel_name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('channel_name'),
+                Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('client_name'),
                 Tables\Columns\TextColumn::make('brand_name'),
                 Tables\Columns\TextColumn::make('duration'),

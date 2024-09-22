@@ -23,11 +23,12 @@ class CampaignVideoSelectionMail extends Mailable
     public $brandName;
     public $agency;
     public $subject;
+    public $message;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $orderID, $brandName, $agency, $subject)
+    public function __construct($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $orderID, $brandName, $agency, $subject, $message)
     {
         //
         $this->campaign = $campaign;
@@ -40,6 +41,7 @@ class CampaignVideoSelectionMail extends Mailable
         $this->brandName = $brandName;
         $this->agency = $agency;
         $this->subject = $subject;
+        $this->message = $message;
     }
 
 
@@ -57,6 +59,7 @@ class CampaignVideoSelectionMail extends Mailable
                         'orderID' => $this->orderID,
                         'brandName' => $this->brandName,
                         'agency' => $this->agency,
+                        'message' => $this->message
                     ]);
     }
 

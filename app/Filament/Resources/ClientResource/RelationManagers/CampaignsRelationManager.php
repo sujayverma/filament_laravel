@@ -94,6 +94,7 @@ class CampaignsRelationManager extends RelationManager
                         
                         return; // Stop further processing if there is an error
                     }
+                    $message = $data['message'];
                     $channels = Channel::whereIn('id', session()->get('channel_id'))->select('id', 'name', 'email')->get()->toArray();
                     
                     foreach($channels as $channel)
@@ -119,7 +120,7 @@ class CampaignsRelationManager extends RelationManager
                         // $to ='sujayverma124@gmail.com';
                         $to .= ',studios@abaccusproductions.com';
                         $rep = explode(',', $to);
-                        if(Mail::to($rep)->bcc([$clientToEmail])->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject)))
+                        if(Mail::to($rep)->bcc([$clientToEmail])->send(new CampaignVideoSelectionMail($channelName, $channelToEmail, $clientName, $clientToEmail, $campaign, $videos, $order->id, $campaign->brand, $campaign->agency, $subject, $message)))
                         {
                             Email::where('id', $email->id)->update([
                             'email_subject' => $subject,
@@ -180,6 +181,7 @@ class CampaignsRelationManager extends RelationManager
                         
                     Step::make('Email Contents')
                         ->schema([
+                            TextInput::make('message')->required()->default('Kindly download your videos from the given link'),
                             RichEditor::make('Email')->disableAllToolbarButtons()
                             ->default(setting::where('setting_key', 'email_message')->pluck('setting_value')->first()),
                            
