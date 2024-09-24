@@ -72,16 +72,14 @@ class VideosRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('download_url')->label('Filename')
                 ->formatStateUsing(function($record) {
-                    $filename = '';
-                    if(strpos($record->download_url, '/'))
+                    if($record->download_url != '')
                     {
-                        $filename = $record->download_url;
+                        return $record->download_url;
                     }
                     else
                     {
-                        $filename = $record->filename;
+                       return $record->name;
                     }
-                    return $filename;
                 }),
                 Tables\Columns\TextColumn::make('caption'),
                 Tables\Columns\TextColumn::make('Language'),
