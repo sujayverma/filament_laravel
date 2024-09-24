@@ -81,7 +81,7 @@ class VideosRelationManager extends RelationManager
                     }
                     else
                     {
-                       return $record->name;
+                       return $record->filename;
                     }
                 }),
                 Tables\Columns\TextColumn::make('caption'),
