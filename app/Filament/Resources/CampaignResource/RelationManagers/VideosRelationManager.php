@@ -71,7 +71,10 @@ class VideosRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('download_url')->label('Filename')
-                ->formatStateUsing(function($record) {
+                // ->formatStateUsing(function($record) {
+                   
+                // }),
+                ->state(function($record){
                     if($record->download_url != '')
                     {
                         return $record->download_url;
