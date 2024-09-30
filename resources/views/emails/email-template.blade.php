@@ -118,7 +118,7 @@ Hi, <br><br>I hope you will be fine...<br><br>{{ $messages }}
 </td>
 @else
 <td style="background:#A0522D;padding:1.5pt 1.5pt 1.5pt 1.5pt">
-<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada">{{ $video["filename"] }}<u></u><u></u></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:'Trebuchet MS','sans-serif';color:#dadada"><u></u><u></u></span></p>
 </td>
 @endif
 </tr>
