@@ -37,6 +37,7 @@ class VideosRelationManager extends RelationManager
                                     ->disk('public')
                                     ->directory('videos')
                                     ->label('Video File')
+                                    ->maxSize(size: 819200) // 800 MB in KB
                                     ->preserveFilenames() 
                                     ->afterStateUpdated(function ($state, callable $set) {
                                         $fileSize = $state->getSize() / (1024 * 1024); // Size in KB
@@ -56,7 +57,7 @@ class VideosRelationManager extends RelationManager
                     Fieldset::make('Properties')->schema([
                         TextInput::make('length'),
                         TextInput::make('frames'),
-                        TextInput::make('size')->disabled(),
+                        TextInput::make('size'),
                         TextInput::make('beta_no')->label('Tvc ID')->default($beta_no),
                     ])->columns(4),
                    
@@ -69,7 +70,8 @@ class VideosRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('id')->toggleable(isToggledHiddenByDefault:true),
+                Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('download_url')->label('Filename')
                 // ->formatStateUsing(function($record) {
                    
@@ -91,6 +93,7 @@ class VideosRelationManager extends RelationManager
                     return "Length: {$record->length} \n Frames: {$record->frames} \n Size: {$record->size}M";
                 })->wrap(),
                 Tables\Columns\TextColumn::make('beta_no')->label('Tvc ID'),
+                Tables\Columns\TextColumn::make('created_at')->label('Created On')->date()->toggleable()->sortable(),
             ])
             ->filters([
                 //

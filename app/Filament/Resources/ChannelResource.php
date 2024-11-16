@@ -28,7 +28,7 @@ class ChannelResource extends Resource
                 //
                 TextInput::make('name')->required(),
                 TextInput::make('contact_person')->required(),
-                TextInput::make('email')->required()->email()->readOnlyOn('edit'),
+                TextInput::make('email')->required(),
                 TextInput::make('phone_no')->required(),
                 TextInput::make('address')->required(),
                 Forms\Components\Checkbox::make('status')
